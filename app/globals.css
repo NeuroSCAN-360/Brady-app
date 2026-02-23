@@ -1,0 +1,232 @@
+@import "tailwindcss";
+@import "tw-animate-css";
+
+@custom-variant dark (&:is(.dark *));
+
+:root {
+  --background: #f6f9fb;
+  --foreground: #1f2f3f;
+
+  --card: #ffffff;
+  --card-foreground: #1f2f3f;
+
+  --popover: #ffffff;
+  --popover-foreground: #1f2f3f;
+
+  --primary: #2e8bc0; /* Calm Blue */
+  --primary-foreground: #ffffff;
+
+  --secondary: #145da0; /* Dark Blue */
+  --secondary-foreground: #ffffff;
+
+  --muted: #f0f5f9;
+  --muted-foreground: #445b6e;
+
+  --accent: #00b8a9; /* Teal */
+  --accent-foreground: #ffffff;
+
+  --destructive: #ff4c4c; /* Error red */
+  --destructive-foreground: #ffffff;
+
+  --border: #ddeaf1;
+  --input: #ddeaf1;
+  --ring: #2e8bc0; /* use primary for focus ring */
+
+  /* optional chart palette */
+  --chart-1: #2e8bc0;
+  --chart-2: #00b8a9;
+  --chart-3: #145da0;
+  --chart-4: #6ca8d7;
+  --chart-5: #4fd1c5;
+
+  --radius: 0.75rem;
+  --sidebar: #ffffff;
+  --sidebar-foreground: #1f2f3f;
+  --sidebar-primary: #2e8bc0;
+  --sidebar-primary-foreground: #ffffff;
+  --sidebar-accent: #f0f5f9;
+  --sidebar-accent-foreground: #1f2f3f;
+  --sidebar-border: #ddeaf1;
+  --sidebar-ring: #2e8bc0;
+}
+
+.dark {
+  --background: #1f2f3f;
+  --foreground: #f6f9fb;
+
+  --card: #22344a;
+  --card-foreground: #f6f9fb;
+
+  --popover: #22344a;
+  --popover-foreground: #f6f9fb;
+
+  --primary: #2e8bc0;
+  --primary-foreground: #ffffff;
+
+  --secondary: #145da0;
+  --secondary-foreground: #ffffff;
+
+  --muted: #2a3e56;
+  --muted-foreground: #c9d7e3;
+
+  --accent: #00b8a9;
+  --accent-foreground: #0a1a22;
+
+  --destructive: #ff4c4c;
+  --destructive-foreground: #1f2f3f;
+
+  --border: #2a435a;
+  --input: #2a435a;
+  --ring: #2e8bc0;
+
+  --chart-1: #6ca8d7;
+  --chart-2: #21d1c3;
+  --chart-3: #2e8bc0;
+  --chart-4: #4fd1c5;
+  --chart-5: #a6c8e8;
+
+  --sidebar: #22344a;
+  --sidebar-foreground: #f6f9fb;
+  --sidebar-primary: #2e8bc0;
+  --sidebar-primary-foreground: #ffffff;
+  --sidebar-accent: #2a3e56;
+  --sidebar-accent-foreground: #f6f9fb;
+  --sidebar-border: #2a435a;
+  --sidebar-ring: #2e8bc0;
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-destructive-foreground: var(--destructive-foreground);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+  --color-chart-1: var(--chart-1);
+  --color-chart-2: var(--chart-2);
+  --color-chart-3: var(--chart-3);
+  --color-chart-4: var(--chart-4);
+  --color-chart-5: var(--chart-5);
+  --radius-sm: calc(var(--radius) - 4px);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) + 4px);
+  --color-sidebar: var(--sidebar);
+  --color-sidebar-foreground: var(--sidebar-foreground);
+  --color-sidebar-primary: var(--sidebar-primary);
+  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
+  --color-sidebar-accent: var(--sidebar-accent);
+  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
+  --color-sidebar-border: var(--sidebar-border);
+  --color-sidebar-ring: var(--sidebar-ring);
+}
+
+/* Heading utility matching design spec */
+.font-heading {
+  font-family:
+    var(--font-montserrat), ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", "Liberation Sans", "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
+  letter-spacing: 0.01em;
+}
+
+/* Utilities */
+.card-soft {
+  @apply bg-card border border-border shadow-sm;
+}
+
+.focus-ring {
+  @apply focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-background;
+}
+
+/* Animations per spec */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+.fade-in {
+  animation: fadeIn 300ms ease-out both;
+}
+
+.btn-bounce:active {
+  transform: scale(0.96);
+}
+
+/* Ensure minimum touch target for buttons */
+button,
+[role="button"] {
+  min-height: 44px;
+}
+
+/* Body base */
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+  }
+  body {
+    @apply bg-background text-foreground;
+  }
+}
+
+/* Subtle animated clinical grid background (respects reduced motion) */
+.animated-clinical-grid {
+  position: absolute;
+  inset: 0;
+  background-color: var(--background);
+  /* low-contrast grid lines derived from primary (alpha tuned per mode) */
+  --grid-line: #2e8bc01a; /* light mode ~10% */
+  background-image: linear-gradient(to right, var(--grid-line) 1px, transparent 1px),
+    linear-gradient(to bottom, var(--grid-line) 1px, transparent 1px);
+  background-size: 36px 36px, 36px 36px;
+  animation: gridPan 28s linear infinite;
+  opacity: 0.6;
+}
+.dark .animated-clinical-grid {
+  --grid-line: #2e8bc033; /* slightly stronger in dark for contrast */
+  opacity: 0.4;
+}
+
+@keyframes gridPan {
+  0% {
+    background-position: 0px 0px, 0px 0px;
+  }
+  100% {
+    background-position: 36px 36px, 36px 36px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .animated-clinical-grid {
+    animation: none;
+  }
+}
+
+/* Gentle hover lift for cards to improve affordance without clutter */
+.card-hover {
+  transition: transform 200ms ease, box-shadow 200ms ease, border-color 200ms ease;
+}
+.card-hover:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 18px rgba(20, 93, 160, 0.08);
+  border-color: color-mix(in srgb, var(--border) 70%, var(--primary) 30%);
+}
+.dark .card-hover:hover {
+  box-shadow: 0 8px 24px rgba(46, 139, 192, 0.12);
+}
