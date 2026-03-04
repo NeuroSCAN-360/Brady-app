@@ -2,10 +2,10 @@ const { createServer } = require('http');
 const { parse } = require('url');
 const next = require('next');
 const { WebSocketServer } = require('ws');
-const { addClient } = require('./lib/websocket-manager.ts');
+const { addClient } = require('./lib/websocket-manager.js');
 
 const dev = process.env.NODE_ENV !== 'production';
-const hostname = 'localhost';
+const hostname = '0.0.0.0';
 const port = parseInt(process.env.PORT || '3000', 10);
 
 const app = next({ dev, hostname, port });
@@ -24,7 +24,7 @@ app.prepare().then(() => {
   });
 
   // WebSocket server for real-time FSR data
-  const wss = new WebSocketServer({ 
+  const wss = new WebSocketServer({
     noServer: true,
     path: '/api/ws'
   });
@@ -35,7 +35,7 @@ app.prepare().then(() => {
 
   server.on('upgrade', (request, socket, head) => {
     const { pathname } = parse(request.url);
-    
+
     if (pathname === '/api/ws') {
       wss.handleUpgrade(request, socket, head, (ws) => {
         wss.emit('connection', ws, request);

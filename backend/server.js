@@ -25,11 +25,11 @@ function connectToDevice() {
   if (deviceWS && deviceWS.readyState === WebSocket.OPEN) return;
   
   try {
-    deviceWS = new WebSocket('ws://192.168.0.51:82/');
+    deviceWS = new WebSocket('ws://192.168.0.54:82/');
     
     deviceWS.on('open', () => {
       sessionStart = Date.now();
-      console.log('Connected to FSR device at ws://192.168.0.51:82/');
+      console.log('Connected to FSR device at ws://192.168.0.54:82/');
       if (reconnectTimeout) {
         clearTimeout(reconnectTimeout);
         reconnectTimeout = null;
@@ -144,27 +144,27 @@ app.get('/device/csv', async (req, res) => {
   }
 });
 
-// Camera stream proxy endpoint to avoid CORS issues
-app.get('/device/stream', async (req, res) => {
-  try {
-    const response = await fetch('http://192.168.0.51:81/stream');
-    if (!response.ok) {
-      return res.status(404).json({ error: 'Camera stream not available from device' });
-    }
+// // Camera stream proxy endpoint to avoid CORS issues
+// app.get('/device/stream', async (req, res) => {
+//   try {
+//     const response = await fetch('http://192.168.0.51:81/stream');
+//     if (!response.ok) {
+//       return res.status(404).json({ error: 'Camera stream not available from device' });
+//     }
     
-    // Forward the content type from the device
-    const contentType = response.headers.get('content-type');
-    if (contentType) {
-      res.setHeader('Content-Type', contentType);
-    }
+//     // Forward the content type from the device
+//     const contentType = response.headers.get('content-type');
+//     if (contentType) {
+//       res.setHeader('Content-Type', contentType);
+//     }
     
-    // Stream the response
-    response.body.pipe(res);
-  } catch (error) {
-    console.error('Failed to fetch camera stream from device:', error.message);
-    res.status(500).json({ error: 'Failed to fetch camera stream from device' });
-  }
-});
+//     // Stream the response
+//     response.body.pipe(res);
+//   } catch (error) {
+//     console.error('Failed to fetch camera stream from device:', error.message);
+//     res.status(500).json({ error: 'Failed to fetch camera stream from device' });
+//   }
+// });
 
 app.post('/analyze/csv', (req, res) => {
   const text = typeof req.body === 'string' ? req.body : req.body.csv;

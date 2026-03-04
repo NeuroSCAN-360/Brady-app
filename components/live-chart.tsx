@@ -66,7 +66,7 @@ export function LiveChart({ samples, title = "Pressure vs Time" }: Props) {
             <XAxis
               dataKey="t"
               type="number"
-              domain={["dataMin", "dataMax"]}
+              domain={data.length > 0 ? [data[0].t, data[data.length - 1].t] : [0, 0]}
               tickFormatter={(v) => `${v}s`}
             />
             <YAxis

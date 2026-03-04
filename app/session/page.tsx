@@ -11,9 +11,11 @@ import { parseCSV, rowsToSamples, type SamplePoint } from "@/lib/csv"
 import { computeMetrics } from "@/lib/metrics"
 import { exportSessionPDF } from "@/lib/pdf"
 import { saveSession, type PatientMeta } from "@/lib/storage"
+import { VideoStreamOverlay } from "@/components/video-stream-overlay"
+import { StreamParams } from "@/components/stream-params"
 
 const BACKEND_URL = ""
-const BACKEND_WS = "ws://localhost:3000/api/ws"
+const BACKEND_WS = typeof window !== "undefined" ? `ws://${window.location.host}/api/ws` : "ws://localhost:3000/api/ws"
 const LIVE_FLUSH_MS = 100
 const METRICS_UPDATE_MS = 250
 
@@ -35,6 +37,8 @@ export default function SessionPage() {
   const incomingRef = useRef<SamplePoint[]>([])
   const samplesRef = useRef<SamplePoint[]>([])
   const [metrics, setMetrics] = useState(() => ({ avgForce: 0, maxForce: 0, tapFrequencyHz: 0, variability: 0, durationMs: 0 }))
+  const [isHandDetected, setIsHandDetected] = useState(false)
+  const [thumbIndexDistance, setThumbIndexDistance] = useState<number | null>(null)
 
   // Seed from uploaded CSV (if any)
   useEffect(() => {
@@ -55,31 +59,34 @@ export default function SessionPage() {
     let alive = true
     let ws: WebSocket | null = null
     let flushTimer: number | null = null
-    
+
     function connect() {
       try {
         ws = new WebSocket(BACKEND_WS)
-        
+
         ws.onopen = () => {
           console.log('Connected to backend WebSocket')
         }
-        
+
         ws.onmessage = (ev) => {
           if (!alive) return
           try {
             const msg = JSON.parse(String(ev.data || "{}")) as Partial<SamplePoint>
+            console.log("WS Data received:", msg) // Debug log
             if (typeof msg.t === "number" && typeof msg.force === "number") {
               incomingRef.current.push({ t: msg.t!, force: msg.force! })
+            } else {
+              console.warn("WS format missing t or force:", msg)
             }
           } catch (err) {
             console.warn('Failed to parse WebSocket message:', err)
           }
         }
-        
+
         ws.onerror = (err) => {
           console.error('WebSocket error:', err)
         }
-        
+
         ws.onclose = () => {
           console.log('WebSocket closed')
           if (alive && running) {
@@ -102,16 +109,16 @@ export default function SessionPage() {
         return next
       })
     }, LIVE_FLUSH_MS)
-    
+
     connect()
-    
+
     return () => {
       alive = false
       if (flushTimer != null) window.clearInterval(flushTimer)
       incomingRef.current = []
       try {
         ws?.close()
-      } catch {}
+      } catch { }
     }
   }, [running])
 
@@ -125,7 +132,7 @@ export default function SessionPage() {
         throw new Error(`Backend returned ${res.status}`)
       }
       const text = await res.text()
-      
+
       // Download CSV file locally
       const blob = new Blob([text], { type: 'text/csv' })
       const url = window.URL.createObjectURL(blob)
@@ -134,7 +141,7 @@ export default function SessionPage() {
       a.download = `FSR_Session_${new Date().toISOString().slice(0, 19).replace(/:/g, '-')}.csv`
       a.click()
       window.URL.revokeObjectURL(url)
-      
+
       // Parse and display the data
       const { rows } = parseCSV(text)
       const parsed = rowsToSamples(rows)
@@ -190,7 +197,7 @@ export default function SessionPage() {
     const url = canvas.toDataURL("image/png")
     const a = document.createElement("a")
     a.href = url
-    a.download = `Session_Chart_${sessionDate.toISOString().slice(0,10)}.png`
+    a.download = `Session_Chart_${sessionDate.toISOString().slice(0, 10)}.png`
     a.click()
   }
 
@@ -201,7 +208,7 @@ export default function SessionPage() {
       <PatientHeader patient={patient} date={sessionDate} />
 
       <div className="flex flex-wrap gap-3">
-        <Button onClick={async () => { try { await fetch(`/api/session/stop`, { method: "POST" }) } catch {} ; setRunning(false) }} className="btn-bounce bg-[var(--color-destructive)] hover:opacity-90">
+        <Button onClick={async () => { try { await fetch(`/api/session/stop`, { method: "POST" }) } catch { }; setRunning(false) }} className="btn-bounce bg-[var(--color-destructive)] hover:opacity-90">
           <StopCircle className="h-4 w-4 mr-2" /> Stop Session
         </Button>
         <Button variant="outline" onClick={fetchCSVFromDevice} className="btn-bounce bg-transparent">
@@ -220,7 +227,7 @@ export default function SessionPage() {
           Analyse
         </Button>
         <div className="ml-auto">
-          <Button  onClick={() => router.push("/")} className="btn-bounce hover:bg-[var(--color-secondary)]">
+          <Button onClick={() => router.push("/")} className="btn-bounce hover:bg-[var(--color-secondary)]">
             Home
           </Button>
         </div>
@@ -230,30 +237,24 @@ export default function SessionPage() {
         <LiveChart samples={samples} />
       </div>
 
-    {/* Camera Feed */}
-      {/* <Card className="card-soft rounded-xl">
-        <CardHeader>
-          <CardTitle className="text-pretty">Camera Feed - Wrist Tremor Device</CardTitle>
-        </CardHeader>
-        <CardContent className="flex justify-center items-center bg-black rounded-lg min-h-[320px] md:min-h-[400px]">
-          <img 
-            src={`${BACKEND_URL}/device/stream`}
-            alt="Wrist Tremor Device Camera Feed"
-            className="max-w-full h-auto rounded"
-            onError={(e) => {
-              const target = e.target as HTMLImageElement;
-              target.style.display = 'none';
-              const parent = target.parentElement;
-              if (parent && !parent.querySelector('.error-message')) {
-                const errorMsg = document.createElement('p');
-                errorMsg.className = 'error-message text-white text-sm';
-                errorMsg.textContent = 'Camera feed unavailable. Ensure device at 192.168.0.51:81 is reachable.';
-                parent.appendChild(errorMsg);
-              }
+      {/* Camera Feed & Analytics Setup */}
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-6">
+        <div>
+          <VideoStreamOverlay
+            streamUrl="http://192.168.0.54/stream"
+            onAnalyticsUpdate={(detected, dist) => {
+              setIsHandDetected(detected)
+              setThumbIndexDistance(dist)
             }}
           />
-        </CardContent>
-      </Card> */}
+        </div>
+        <div>
+          <StreamParams
+            isHandDetected={isHandDetected}
+            thumbIndexDistance={thumbIndexDistance}
+          />
+        </div>
+      </div>
 
       <SummaryCards metrics={metrics} />
 
