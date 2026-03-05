@@ -250,25 +250,33 @@ export default function HomePage() {
             )}
           </div>
 
-          <div className="flex flex-col md:flex-row items-center justify-center gap-3 md:gap-4 mb-6">
-            <div
-              className="h-14 w-14 md:h-17 md:w-17 rounded-md bg-[var(--color-primary)] text-white grid place-items-center shrink-0"
-              aria-hidden
-            >
-              <Brain className="h-10 w-10 md:h-16 md:w-16" />
+          <div className="flex flex-col items-center justify-center gap-5 md:gap-6 mb-8 mt-4 md:mt-8">
+            <div className="relative group">
+              {/* Animated glow behind icon */}
+              <div className="absolute inset-0 bg-gradient-to-tr from-[#00B8A9] to-[#2E8BC0] rounded-2xl blur-xl opacity-40 group-hover:opacity-60 transition-opacity duration-500 animate-pulse" />
+              <div
+                className="relative h-20 w-20 md:h-24 md:w-24 rounded-2xl bg-gradient-to-br from-[#145DA0] via-[#2E8BC0] to-[#00B8A9] text-white flex items-center justify-center shadow-xl shadow-[#145DA0]/20 ring-4 ring-white/50 transform group-hover:scale-105 transition-all duration-300"
+                aria-hidden
+              >
+                <Brain className="h-10 w-10 md:h-12 md:w-12 drop-shadow-md" />
+              </div>
             </div>
-            <div className="text-center md:text-left">
-              <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold text-[#145DA0] font-[Montserrat] mb-2 leading-tight">FSR Companion App</h1>
-              <p className="text-base sm:text-lg md:text-xl text-[#2E8BC0] font-medium leading-snug">
-                Clinical-grade finger-tap test capture
-                <br className="hidden md:block" /> and reporting
+
+            <div className="text-center flex flex-col items-center max-w-3xl px-4">
+              <h1 className="text-4xl sm:text-5xl md:text-6xl font-[Montserrat] font-extrabold tracking-tight mb-4">
+                <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#145DA0] via-[#2E8BC0] to-[#00B8A9] drop-shadow-sm">
+                  FSR Companion App
+                </span>
+              </h1>
+              <p className="text-lg sm:text-xl md:text-2xl text-[#2E8BC0] font-semibold tracking-wide mb-4">
+                Clinical-grade finger-tapping test
+              </p>
+              <div className="w-24 h-1 bg-gradient-to-r from-transparent via-[#00B8A9]/50 to-transparent rounded-full mb-6" />
+              <p className="text-base md:text-lg text-gray-500 font-medium leading-relaxed max-w-2xl">
+                Advanced neurological testing suite for comprehensive cognitive and motor function assessment in patients with neurodegenerative conditions.
               </p>
             </div>
           </div>
-          <p className="text-base md:text-lg text-gray-600 max-w-2xl mx-auto leading-relaxed px-4 md:px-0">
-            Advanced neurological testing suite for comprehensive cognitive and motor function assessment in patients with
-            neurodegenerative conditions.
-          </p>
         </div>
 
         {/* Patient Information Form (Requires Auth) */}
@@ -280,81 +288,79 @@ export default function HomePage() {
                 Patient Information
               </CardTitle>
             </CardHeader>
-            <CardContent className="grid grid-cols-1 md:grid-cols-12 gap-5 md:gap-[23px] px-4 md:px-0 mx-0 md:mx-[-3px] my-6 md:my-8">
-              <div className="grid gap-2 md:col-span-8">
-                <Label htmlFor="name" className="text-base font-medium text-[#145DA0] flex items-center gap-2">
-                  {" "}
-                  <User className="w-4 h-4" /> Patient Name{" "}
+            <CardContent className="grid grid-cols-1 md:grid-cols-12 gap-6 p-5 sm:p-8 bg-white/40">
+              <div className="grid gap-2.5 md:col-span-12 lg:col-span-6">
+                <Label htmlFor="name" className="text-sm font-semibold text-[#145DA0] flex items-center gap-2">
+                  <User className="w-4.5 h-4.5 text-[#2E8BC0]" /> Patient Name
                 </Label>
                 <Input
                   id="name"
                   placeholder="Enter Patient Name"
-                  className="focus-ring"
+                  className="focus-ring border-[#DDEAF1] bg-white h-12 text-base placeholder:text-gray-400 shadow-[0_2px_10px_-4px_rgba(20,93,160,0.1)] transition-all"
                   value={form.name}
                   onChange={(e) => setForm({ ...form, name: e.target.value })}
                 />
               </div>
-              <div className="grid gap-2 md:col-span-2">
-                <Label htmlFor="age" className="text-base font-medium text-[#145DA0] flex items-center gap-2">
-                  <IdCard className="w-4 h-4" />
-                  Patient Age{" "}
+              <div className="grid gap-2.5 md:col-span-6 lg:col-span-3">
+                <Label htmlFor="age" className="text-sm font-semibold text-[#145DA0] flex items-center gap-2">
+                  <IdCard className="w-4.5 h-4.5 text-[#2E8BC0]" /> Age
                 </Label>
                 <Input
                   id="age"
                   type="number"
-                  placeholder="Enter Patient Age"
-                  className="focus-ring"
+                  placeholder="e.g. 65"
+                  className="focus-ring border-[#DDEAF1] bg-white h-12 text-base placeholder:text-gray-400 shadow-[0_2px_10px_-4px_rgba(20,93,160,0.1)] transition-all"
                   value={form.age}
                   onChange={(e) => setForm({ ...form, age: e.target.value })}
                 />
               </div>
-              <div className="grid gap-2 md:col-span-2">
-                <Label htmlFor="gender" className="text-base font-medium text-[#145DA0]">
-                  <User className="w-4 h-4" />
-                  Gender
+              <div className="grid gap-2.5 md:col-span-6 lg:col-span-3">
+                <Label htmlFor="gender" className="text-sm font-semibold text-[#145DA0] flex items-center gap-2">
+                  <User className="w-4.5 h-4.5 text-[#2E8BC0]" /> Gender
                 </Label>
                 <select
                   id="gender"
-                  className="focus-ring rounded-md border border-[#DDEAF1] bg-white px-3 py-2 text-sm"
+                  className="focus-ring flex h-12 w-full rounded-md border border-[#DDEAF1] bg-white px-3 py-2 text-base text-gray-900 shadow-[0_2px_10px_-4px_rgba(20,93,160,0.1)] transition-all"
                   value={form.gender}
                   onChange={(e) => setForm({ ...form, gender: e.target.value })}
                 >
-                  <option value="" disabled>
-                    Select Gender
-                  </option>
+                  <option value="" disabled className="text-gray-400">Select Gender</option>
                   <option value="male">Male</option>
                   <option value="female">Female</option>
                   <option value="non-binary">Non-binary</option>
                 </select>
               </div>
 
-              <div className="md:col-span-12 flex flex-col md:flex-row flex-wrap gap-3 pt-2">
+              <div className="md:col-span-12 flex flex-col sm:flex-row flex-wrap gap-4 pt-6 mt-2 border-t border-[#DDEAF1]/60">
                 <Button
                   onClick={startSession}
                   disabled={!canStart}
-                  className="btn-bounce min-h-11 px-5 bg-[var(--color-primary)] hover:bg-[var(--color-secondary)] w-full md:w-auto"
+                  className="btn-bounce h-12 px-8 bg-[var(--color-primary)] hover:bg-[var(--color-secondary)] w-full sm:w-auto text-base shadow-lg shadow-[#145DA0]/20 font-semibold"
                 >
                   Connect & Start
                 </Button>
                 <Button
                   type="button"
                   onClick={uploadCSV}
-                  className="btn-bounce min-h-11 px-5 hover:bg-[var(--color-secondary)] text-white hover:opacity-90 w-full md:w-auto"
+                  className="btn-bounce h-12 px-8 bg-white hover:bg-[#F0F6f9] border border-[#DDEAF1] text-[#145DA0] w-full sm:w-auto text-base shadow-sm font-medium"
                 >
-                  <Upload className="h-4 w-4 mr-2" /> Upload CSV (Fallback)
+                  <Upload className="h-5 w-5 mr-2 text-[#2E8BC0]" /> Upload CSV
                 </Button>
                 <Button
                   variant="outline"
                   onClick={() => router.push("/history")}
-                  className="btn-bounce min-h-11 px-5 hover:bg-[var(--color-primary)] w-full md:w-auto"
+                  className="btn-bounce h-12 px-8 hover:bg-[#F0F6f9] text-[#145DA0] border-[#DDEAF1] bg-white w-full sm:w-auto text-base shadow-sm font-medium sm:ml-auto"
                 >
-                  <History className="h-4 w-4 mr-2" /> View Past Sessions
+                  <History className="h-5 w-5 mr-2 text-[#2E8BC0]" /> History
                 </Button>
               </div>
 
-              <p className="text-xs opacity-70 md:col-span-12 mt-2">
-                The app connects to the backend server which streams live data from the FSR device via WebSocket.
-              </p>
+              <div className="text-xs text-[#145DA0]/80 md:col-span-12 mt-3 font-medium bg-gradient-to-r from-[#F0F6f9] to-white p-4 rounded-xl border border-[#DDEAF1]/60 flex items-center gap-3 shadow-sm">
+                <div className="w-8 h-8 rounded-full bg-white flex items-center justify-center shrink-0 shadow-[0_2px_8px_-2px_rgba(0,184,169,0.3)]">
+                  <Activity className="w-4 h-4 text-[#00B8A9]" />
+                </div>
+                <p>The app connects to the tracking backend, which streams live high-precision metrics directly from the connected FSR device via continuous WebSockets.</p>
+              </div>
             </CardContent>
           </Card>
         ) : (
